@@ -45,7 +45,7 @@ export class CreateBusinessUser extends Component {
 
     if (e.target.files) {
       this.setState({
-        [e.target.image]: e.target.files[0],
+        [e.target.name]: e.target.files[0],
         file: URL.createObjectURL(e.target.files[0]),
       });
     }

@@ -84,7 +84,9 @@ export class CreateCoupon extends Component {
         .then((res) => {
           console.log("res.data of coupon_add API is: ", res.data);
 
-          swal("Coupon Succesfully Added!");
+          swal("Coupon Succesfully Added!", {
+            icon: "success",
+          });
 
           setTimeout(() => {
             window.location.href = "/component/gridCoupon";

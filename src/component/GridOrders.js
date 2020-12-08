@@ -18,11 +18,10 @@ export class GridOrders extends Component {
       "token on GridCategory screen : ",
       localStorage.getItem("token")
     );
-    // var data;
+
     axios({
       method: "get",
       url: Serverurl + "orders_show",
-      // data: data,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -40,8 +39,6 @@ export class GridOrders extends Component {
         $(document).ready(function () {
           $("#datatable2").DataTable();
         });
-
-        // console.log('data', res.data.data)
       })
       .catch((err) => {
         console.log("Error from orders_show api is: ", err);
@@ -52,7 +49,6 @@ export class GridOrders extends Component {
     axios({
       method: "get",
       url: Serverurl + "orderproducts_search/" + id,
-      // data: data,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -78,6 +74,11 @@ export class GridOrders extends Component {
       });
   }
 
+  updateOrderStatus = (id) => {
+    localStorage.setItem("orderId", id);
+    console.log("order_id is: ", id);
+  };
+
   render() {
     return (
       <div>
@@ -88,7 +89,7 @@ export class GridOrders extends Component {
                 <div class="card-body table-responsive">
                   <div className="list-head-btn">
                     <div className="head">
-                      <h4>List Orders</h4>
+                      <h4>Orders List</h4>
                     </div>
                   </div>
                   <div class="table-3">
@@ -126,6 +127,15 @@ export class GridOrders extends Component {
                                   )}
                                 >
                                   <i className="fa fa-eye"></i>
+                                </a>
+                                <a
+                                  href="/component/updateOrder"
+                                  onClick={this.updateOrderStatus.bind(
+                                    this,
+                                    order.id
+                                  )}
+                                >
+                                  <i className="fas fa-pencil-alt"></i>
                                 </a>
                               </div>
                             </td>

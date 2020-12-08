@@ -10,11 +10,12 @@ export class UpdateBusinessUser extends Component {
     this.state = {
       userData: {},
       userId: "",
-      //   image: null,
-      //   name: "",
-      //   email: "",
-      //   phone: "",
-      //   user_type: "",
+      image: null,
+      name: "",
+      email: "",
+      phone: "",
+      user_type: "",
+
       errorText: "",
     };
   }
@@ -29,7 +30,7 @@ export class UpdateBusinessUser extends Component {
 
     axios({
       method: "get",
-      url: Serverurl + "user_show/" + id,
+      url: Serverurl + "user_show/",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -62,85 +63,67 @@ export class UpdateBusinessUser extends Component {
     });
   };
 
-  //   handleBtnUpdateClick() {
-  //     var formData = new FormData();
-  //     if (this.state.image) {
-  //       formData.append("image", this.state.image);
-  //     }
-  //     formData.append(
-  //       "name",
-  //       this.state.name ? this.state.name : this.state.productData.name
-  //     );
-  //     formData.append(
-  //       "description",
-  //       this.state.description
-  //         ? this.state.description
-  //         : this.state.productData.description
-  //     );
-  //     formData.append(
-  //       "stock",
-  //       this.state.stock ? this.state.stock : this.state.productData.stock
-  //     );
-  //     formData.append(
-  //       "price",
-  //       this.state.price ? this.state.price : this.state.productData.price
-  //     );
-  //     formData.append(
-  //       "category",
-  //       this.state.category
-  //         ? this.state.category
-  //         : this.state.productData.category
-  //     );
-  //     formData.append(
-  //       "sub_category",
-  //       this.state.sub_category
-  //         ? this.state.sub_category
-  //         : this.state.productData.sub_category
-  //     );
-  //     formData.append(
-  //       "discount_percent",
-  //       this.state.discount_percent
-  //         ? this.state.discount_percent
-  //         : this.state.productData.discount_percent
-  //     );
-  //     formData.append(
-  //       "discounted_price",
-  //       this.state.discounted_price
-  //         ? this.state.discounted_price
-  //         : this.state.productData.discounted_price
-  //     );
+  handleBtnUpdateClick() {
+    var formData = new FormData();
+    if (this.state.image) {
+      formData.append("image", this.state.image);
+    }
+    formData.append(
+      "name",
+      this.state.name ? this.state.name : this.state.productData.name
+    );
+    formData.append(
+      "description",
+      this.state.description
+        ? this.state.description
+        : this.state.productData.description
+    );
+    formData.append(
+      "stock",
+      this.state.stock ? this.state.stock : this.state.productData.stock
+    );
+    formData.append(
+      "price",
+      this.state.price ? this.state.price : this.state.productData.price
+    );
+    formData.append(
+      "category",
+      this.state.category
+        ? this.state.category
+        : this.state.productData.category
+    );
 
-  //     console.log(this.state.token);
-  //     console.log("product's Id is: ", this.state.productId);
+    console.log(this.state.token);
+    console.log("product's Id is: ", this.state.productId);
 
-  //     axios({
-  //       method: "post",
-  //       url: Serverurl + "products_edit/" + this.state.productId,
-  //       data: formData,
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //     })
-  //       .then((res) => {
-  //         swal("Product is successfully updated!");
+    axios({
+      method: "post",
+      url: Serverurl + "products_edit/" + this.state.productId,
+      data: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => {
+        swal("User is successfully updated!");
 
-  //         console.log(
-  //           "res.data from products_edit/id in handleBtnUpdateClick() is: ",
-  //           res.data
-  //         );
+        console.log(
+          "res.data from products_edit/id in handleBtnUpdateClick() is: ",
+          res.data
+        );
 
-  //         setTimeout(() => {
-  //           window.location.href = "/component/gridProducts";
-  //         }, 2000);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err.res);
+        setTimeout(() => {
+          window.location.href = "/component/gridProducts";
+        }, 2000);
+      })
+      .catch((err) => {
+        console.log(err.res);
 
-  //         this.setState({
-  //           errorText: "Updating product Failed! Please try again",
-  //         });
-  //       });
-  //   }
+        this.setState({
+          errorText: "Updating product Failed! Please try again",
+        });
+      });
+  }
 
   render() {
     return (
@@ -267,6 +250,7 @@ export class UpdateBusinessUser extends Component {
                         <button
                           type="button"
                           class="btn btn-danger waves-effect waves-light submit-button"
+                          onClick={this.handleBtnUpdateClick.bind(this)}
                         >
                           Update
                         </button>

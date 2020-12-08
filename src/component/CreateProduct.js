@@ -10,14 +10,17 @@ export class CreateProduct extends Component {
     {
       this.state = {
         categoryData: [],
+        subCategoryData: [],
+        brandData: [],
         token: "",
         image: null,
         name: "",
         description: "",
         stock: "",
         price: "",
-        category: "",
-        sub_category: "",
+        category_id: "",
+        subcategory_id: "",
+        brand_id: "",
         discount_percent: "",
         discounted_price: "",
 
@@ -34,6 +37,7 @@ export class CreateProduct extends Component {
 
     console.log("componentDidMount() token: ", this.state.token);
 
+    //category_show api
     axios({
       method: "get",
       url: Serverurl + "category_show",
@@ -45,9 +49,53 @@ export class CreateProduct extends Component {
       },
     })
       .then((res) => {
-        console.log("cat", res.data);
+        console.log("res.data of category_show api is: ", res.data);
         this.setState({
           categoryData: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // sub-category show api
+    axios({
+      method: "get",
+      url: Serverurl + "subcategory_show",
+      //   data: data,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      config: {
+        headers: { "Content-Type": "application/json" },
+      },
+    })
+      .then((res) => {
+        console.log("subcategory_show api response.data is: ", res.data);
+
+        this.setState({
+          subCategoryData: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log("sub-category .catch error is: ", err);
+      });
+
+    //brand api
+    axios({
+      method: "get",
+      url: Serverurl + "brand_show",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      config: {
+        headers: { "Content-Type": "application/json" },
+      },
+    })
+      .then((res) => {
+        console.log("res.data of brand_show api is: ", res.data);
+        this.setState({
+          brandData: res.data,
         });
       })
       .catch((err) => {
@@ -105,23 +153,30 @@ export class CreateProduct extends Component {
       validation = false;
     }
 
+    if (this.state.category_id == "") {
+      this.setState({
+        errorText: "*Product category_id is required!",
+      });
+      validation = false;
+    }
+
+    if (this.state.subcategory_id == "") {
+      this.setState({
+        errorText: "*Product subcategory_id is required!",
+      });
+      validation = false;
+    }
+
+    if (this.state.brand_id == "") {
+      this.setState({
+        errorText: "*Product brand_id is required!",
+      });
+      validation = false;
+    }
+
     if (this.state.price == "") {
       this.setState({
         errorText: "*Product price is required!",
-      });
-      validation = false;
-    }
-
-    if (this.state.category == "") {
-      this.setState({
-        errorText: "*Product category is required!",
-      });
-      validation = false;
-    }
-
-    if (this.state.sub_category == "") {
-      this.setState({
-        errorText: "*Product sub_category is required!",
       });
       validation = false;
     }
@@ -132,10 +187,11 @@ export class CreateProduct extends Component {
       formData.append("name", this.state.name);
       formData.append("description", this.state.description);
       formData.append("stock", this.state.stock);
-      formData.append("price", this.state.price);
-      formData.append("category", this.state.category);
-      formData.append("sub_category", this.state.sub_category);
+      formData.append("category_id", this.state.category_id.toString());
+      formData.append("subcategory_id", this.state.subcategory_id.toString());
+      formData.append("brand_id", this.state.brand_id.toString());
       formData.append("discount_percent", this.state.discount_percent);
+      formData.append("price", this.state.price);
       formData.append("discounted_price", this.state.discounted_price);
 
       this.setState({
@@ -158,11 +214,13 @@ export class CreateProduct extends Component {
         .then((res) => {
           console.log("res.data of products_add API is: ", res.data);
 
-          swal("Product Succesfully Added!");
+          swal("Product Succesfully Added!", {
+            icon: "success",
+          });
 
           setTimeout(() => {
             window.location.href = "/component/gridProducts";
-          }, 3000);
+          }, 2000);
         })
         .catch((err) => {
           console.log("Error from products_add API is: ", err);
@@ -215,7 +273,7 @@ export class CreateProduct extends Component {
                         for="example-search-input"
                         class="col-sm-2 col-form-label"
                       >
-                        Image Upload
+                        Upload Image
                       </label>
                       <div class="col-sm-12">
                         <input
@@ -233,7 +291,7 @@ export class CreateProduct extends Component {
                         for="example-text-input"
                         class="col-sm-2 col-form-label"
                       >
-                        Product Name
+                        Name
                       </label>
                       <div class="col-sm-10">
                         <input
@@ -283,35 +341,17 @@ export class CreateProduct extends Component {
                     </div>
 
                     <div class="form-group row">
-                      <label
-                        for="example-email-input"
-                        class="col-sm-2 col-form-label"
-                      >
-                        Price
-                      </label>
-                      <div class="col-sm-10">
-                        <input
-                          class="form-control"
-                          name="price"
-                          type="text"
-                          id="example-email-input"
-                          onChange={this.handleChangeProduct.bind(this)}
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
                       <label class="col-sm-2 col-form-label">Category</label>
                       <div class="col-sm-10">
                         <select
-                          name="category"
+                          name="category_id"
                           class="form-control"
                           onChange={this.handleChangeProduct.bind(this)}
                         >
                           <option>Select Category</option>
                           {this.state.categoryData.map((category) => {
                             return (
-                              <option key={category.name} value={category.name}>
+                              <option key={category.id} value={category.id}>
                                 {category.name}
                               </option>
                             );
@@ -320,46 +360,48 @@ export class CreateProduct extends Component {
                       </div>
                     </div>
 
-                    {/* <div class="form-group row">
+                    <div class="form-group row">
                       <label class="col-sm-2 col-form-label">
                         Sub Category
                       </label>
                       <div class="col-sm-10">
                         <select
-                          name="sub_category"
+                          name="subcategory_id"
                           class="form-control"
-                          onChange={this.handleSubCategoryInput.bind(this)}
+                          onChange={this.handleChangeProduct.bind(this)}
                         >
                           <option>Select Sub Category</option>
-                          {this.state.categoryData.map((sub_category) => {
+                          {this.state.subCategoryData.map((sub_category) => {
                             return (
                               <option
-                                key={sub_category.sub_category}
+                                key={sub_category.id}
                                 value={sub_category.id}
                               >
-                                {sub_category.sub_category}
+                                {sub_category.name}
                               </option>
                             );
                           })}
                         </select>
                       </div>
-                    </div> */}
+                    </div>
 
                     <div class="form-group row">
-                      <label
-                        for="example-email-input"
-                        class="col-sm-2 col-form-label"
-                      >
-                        Sub Category
-                      </label>
+                      <label class="col-sm-2 col-form-label">Brand</label>
                       <div class="col-sm-10">
-                        <input
+                        <select
+                          name="brand_id"
                           class="form-control"
-                          name="sub_category"
-                          type="text"
-                          id="example-email-input"
                           onChange={this.handleChangeProduct.bind(this)}
-                        />
+                        >
+                          <option>Select Brand</option>
+                          {this.state.brandData.map((brand) => {
+                            return (
+                              <option key={brand.id} value={brand.id}>
+                                {brand.name}
+                              </option>
+                            );
+                          })}
+                        </select>
                       </div>
                     </div>
 
@@ -374,6 +416,24 @@ export class CreateProduct extends Component {
                         <input
                           class="form-control"
                           name="discount_percent"
+                          type="text"
+                          id="example-email-input"
+                          onChange={this.handleChangeProduct.bind(this)}
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label
+                        for="example-email-input"
+                        class="col-sm-2 col-form-label"
+                      >
+                        Price
+                      </label>
+                      <div class="col-sm-10">
+                        <input
+                          class="form-control"
+                          name="price"
                           type="text"
                           id="example-email-input"
                           onChange={this.handleChangeProduct.bind(this)}
@@ -414,12 +474,6 @@ export class CreateProduct extends Component {
                         </button>
                       </div>
                     </div>
-
-                    {/* {this.state.errorText ?
-                                            <p style={{ color: 'red' }}>{this.state.errorText}</p>
-                                            : null
-                                        }
-                                        <div id="err">{this.state.error}</div> */}
                   </div>
 
                   {/* <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">

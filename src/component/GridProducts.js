@@ -14,11 +14,9 @@ export class GridProducts extends Component {
   }
 
   componentDidMount() {
-    // var data;
     axios({
       method: "get",
       url: Serverurl + "products_show",
-      // data: data,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -36,8 +34,6 @@ export class GridProducts extends Component {
         $(document).ready(function () {
           $("#datatable2").DataTable();
         });
-
-        // console.log('data', res.data.data)
       })
       .catch((err) => {
         console.log("Error from products_show api is: ", err);
@@ -45,6 +41,11 @@ export class GridProducts extends Component {
   }
 
   updateProduct(id) {
+    localStorage.setItem("productId", id);
+    console.log("product id is: ", id);
+  }
+
+  viewProduct(id) {
     localStorage.setItem("productId", id);
     console.log("product id is: ", id);
   }
@@ -148,6 +149,15 @@ export class GridProducts extends Component {
                                   )}
                                 >
                                   <i className="fas fa-pencil-alt"></i>
+                                </a>
+                                <a
+                                  href="/component/viewProduct"
+                                  onClick={this.viewProduct.bind(
+                                    this,
+                                    product.id
+                                  )}
+                                >
+                                  <i className="fa fa-eye"></i>
                                 </a>
                                 <i
                                   className="fas fa-trash-alt"

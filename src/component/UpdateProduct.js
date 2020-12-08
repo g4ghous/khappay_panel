@@ -9,16 +9,23 @@ export class UpdateProduct extends Component {
     super(props);
     this.state = {
       productData: {},
+      categoryData: [],
+      subCategoryData: [],
+      brandData: [],
+
       productId: "",
+
       image: null,
       name: "",
       description: "",
       stock: "",
       price: "",
-      category: "",
-      sub_category: "",
+      category_id: "",
+      subcategory_id: "",
+      brand_id: "",
       discount_percent: "",
       discounted_price: "",
+
       errorText: "",
     };
   }
@@ -58,9 +65,7 @@ export class UpdateProduct extends Component {
           //   discount_percent: res.data.discount_percent,
           //   discounted_price: res.data.discounted_price,
         });
-        // $(document).ready(function () {
-        //     $('#datatable3').DataTable();
-        // });
+
         console.log(
           "res.data from products_show api in then() of UpdateBrand is: ",
           res.data
@@ -70,6 +75,71 @@ export class UpdateProduct extends Component {
         this.setState({
           errorText: err.response,
         });
+      });
+
+    //category_show api
+    axios({
+      method: "get",
+      url: Serverurl + "category_show",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      config: {
+        headers: { "Content-Type": "application/json" },
+      },
+    })
+      .then((res) => {
+        console.log("res.data of category_show api is: ", res.data);
+        this.setState({
+          categoryData: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // subcategory_show api
+    axios({
+      method: "get",
+      url: Serverurl + "subcategory_show",
+      //   data: data,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      config: {
+        headers: { "Content-Type": "application/json" },
+      },
+    })
+      .then((res) => {
+        console.log("subcategory_show api response.data is: ", res.data);
+
+        this.setState({
+          subCategoryData: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log("sub-category .catch error is: ", err);
+      });
+
+    //brand_show api
+    axios({
+      method: "get",
+      url: Serverurl + "brand_show",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      config: {
+        headers: { "Content-Type": "application/json" },
+      },
+    })
+      .then((res) => {
+        console.log("res.data of brand_show api is: ", res.data);
+        this.setState({
+          brandData: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -118,20 +188,26 @@ export class UpdateProduct extends Component {
       this.state.stock ? this.state.stock : this.state.productData.stock
     );
     formData.append(
+      "category_id",
+      this.state.category_id
+        ? this.state.category_id
+        : this.state.productData.category_id
+    );
+    formData.append(
+      "subcategory_id",
+      this.state.subcategory_id
+        ? this.state.subcategory_id
+        : this.state.productData.subcategory_id
+    );
+    formData.append(
+      "brand_id",
+      this.state.brand_id
+        ? this.state.brand_id
+        : this.state.productData.brand_id
+    );
+    formData.append(
       "price",
       this.state.price ? this.state.price : this.state.productData.price
-    );
-    formData.append(
-      "category",
-      this.state.category
-        ? this.state.category
-        : this.state.productData.category
-    );
-    formData.append(
-      "sub_category",
-      this.state.sub_category
-        ? this.state.sub_category
-        : this.state.productData.sub_category
     );
     formData.append(
       "discount_percent",
@@ -158,7 +234,9 @@ export class UpdateProduct extends Component {
       },
     })
       .then((res) => {
-        swal("Product is successfully updated!");
+        swal("Product is successfully updated!", {
+          icon: "success",
+        });
 
         console.log(
           "res.data from products_edit/id in handleBtnUpdateClick() is: ",
@@ -228,7 +306,7 @@ export class UpdateProduct extends Component {
                         for="example-text-input"
                         class="col-sm-2 col-form-label"
                       >
-                        Product Name
+                        Name
                       </label>
                       <div class="col-sm-10">
                         <input
@@ -281,6 +359,71 @@ export class UpdateProduct extends Component {
                     </div>
 
                     <div class="form-group row">
+                      <label class="col-sm-2 col-form-label">Category</label>
+                      <div class="col-sm-10">
+                        <select
+                          name="category_id"
+                          class="form-control"
+                          onChange={this.handleChangeProduct.bind(this)}
+                        >
+                          <option>Select Category</option>
+                          {this.state.categoryData.map((category) => {
+                            return (
+                              <option key={category.id} value={category.id}>
+                                {category.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label class="col-sm-2 col-form-label">
+                        Sub Category
+                      </label>
+                      <div class="col-sm-10">
+                        <select
+                          name="subcategory_id"
+                          class="form-control"
+                          onChange={this.handleChangeProduct.bind(this)}
+                        >
+                          <option>Select Sub Category</option>
+                          {this.state.subCategoryData.map((sub_category) => {
+                            return (
+                              <option
+                                key={sub_category.id}
+                                value={sub_category.id}
+                              >
+                                {sub_category.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label class="col-sm-2 col-form-label">Brand</label>
+                      <div class="col-sm-10">
+                        <select
+                          name="brand_id"
+                          class="form-control"
+                          onChange={this.handleChangeProduct.bind(this)}
+                        >
+                          <option>Select Brand</option>
+                          {this.state.brandData.map((brand) => {
+                            return (
+                              <option key={brand.id} value={brand.id}>
+                                {brand.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
                       <label
                         for="example-email-input"
                         class="col-sm-2 col-form-label"
@@ -299,7 +442,7 @@ export class UpdateProduct extends Component {
                       </div>
                     </div>
 
-                    <div class="form-group row input-margin">
+                    {/* <div class="form-group row input-margin">
                       <label
                         for="example-text-input"
                         class="col-sm-2 col-form-label"
@@ -335,7 +478,7 @@ export class UpdateProduct extends Component {
                           placeholder={this.state.productData.sub_category}
                         />
                       </div>
-                    </div>
+                    </div> */}
 
                     <div class="form-group row">
                       <label

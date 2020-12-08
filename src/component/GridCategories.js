@@ -65,7 +65,9 @@ export class GridCategories extends Component {
     })
       .then((response) => {
         console.log("category_delete API response data is --> ", response.data);
-        swal("Category is successfully deleted!");
+        swal("Category is successfully deleted!", {
+          icon: "success",
+        });
 
         // after delete from cart, again fetching new data from cart_user api
         axios({

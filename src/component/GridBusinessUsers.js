@@ -79,7 +79,7 @@ export class GridBusinessUsers extends Component {
                           <th>Email</th>
                           <th>Phone</th>
                           <th>User Type</th>
-                          <th>Actions</th>
+                          {/* <th>Actions</th> */}
                         </tr>
                       </thead>
 
@@ -94,7 +94,7 @@ export class GridBusinessUsers extends Component {
                             <td>{user.email}</td>
                             <td>{user.phone}</td>
                             <td>{user.user_type}</td>
-                            <td>
+                            {/* <td>
                               <div class="icon-pad">
                                 <a
                                   href="/component/updateBusinessUser"
@@ -106,7 +106,7 @@ export class GridBusinessUsers extends Component {
                                   <i className="fas fa-pencil-alt"></i>
                                 </a>
                               </div>
-                            </td>
+                            </td> */}
                           </tr>
                         ))}
                       </tbody>
